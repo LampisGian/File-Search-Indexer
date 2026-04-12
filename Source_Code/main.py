@@ -2,6 +2,21 @@ import os
 
 from scanner.file_scanner import FileScanner
 from storage.index_storage import IndexStorage
+from search.search_engine import SearchEngine
+
+
+def print_records(records, limit=10):
+    if not records:
+        print("\nNo results found.\n")
+        return
+
+    print(f"\nFound {len(records)} matching files:\n")
+
+    for record in records[:limit]:
+        print(record)
+
+    if len(records) > limit:
+        print(f"\nShowing first {limit} results only.")
 
 
 def main():
@@ -22,23 +37,47 @@ def main():
     storage.save_to_json(files)
     storage.save_to_sqlite(files)
 
-    print(f"\nTotal files found: {len(files)}")
+    print(f"\nTotal files indexed: {len(files)}")
     print("Index saved to JSON: data/file_index.json")
-    print("Index saved to SQLite: data/file_index.db\n")
+    print("Index saved to SQLite: data/file_index.db")
 
-    json_records = storage.load_from_json()
-    sqlite_records = storage.load_from_sqlite()
+    search_engine = SearchEngine(files)
 
-    print(f"Loaded {len(json_records)} records from JSON.")
-    print(f"Loaded {len(sqlite_records)} records from SQLite.\n")
+    while True:
+        print("\nSearch Options:")
+        print("1. Search by name")
+        print("2. Search by extension")
+        print("3. Search by name and extension")
+        print("4. Show all files")
+        print("5. Exit")
 
-    print("First 5 records from JSON:")
-    for record in json_records[:5]:
-        print(record)
+        choice = input("\nChoose an option: ").strip()
 
-    print("\nFirst 5 records from SQLite:")
-    for record in sqlite_records[:5]:
-        print(record)
+        if choice == "1":
+            keyword = input("Enter file name keyword: ").strip()
+            results = search_engine.search_by_name(keyword)
+            print_records(results)
+
+        elif choice == "2":
+            extension = input("Enter file extension (e.g. txt or .txt): ").strip()
+            results = search_engine.search_by_extension(extension)
+            print_records(results)
+
+        elif choice == "3":
+            keyword = input("Enter file name keyword: ").strip()
+            extension = input("Enter file extension (e.g. txt or .txt): ").strip()
+            results = search_engine.search(name_keyword=keyword, extension=extension)
+            print_records(results)
+
+        elif choice == "4":
+            print_records(files)
+
+        elif choice == "5":
+            print("Exiting program.")
+            break
+
+        else:
+            print("Invalid option. Please try again.")
 
 
 if __name__ == "__main__":
