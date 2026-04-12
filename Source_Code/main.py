@@ -4,20 +4,68 @@ from scanner.file_scanner import FileScanner
 from storage.index_storage import IndexStorage
 from search.search_engine import SearchEngine
 from search.filters import FileFilter
+from search.sorter import FileSorter
+from search.paginator import Paginator
 
 
-def print_records(records, limit=10):
+def print_records(records):
     if not records:
         print("\nNo results found.\n")
         return
 
-    print(f"\nFound {len(records)} matching files:\n")
-
-    for record in records[:limit]:
+    for record in records:
         print(record)
 
-    if len(records) > limit:
-        print(f"\nShowing first {limit} results only.")
+
+def display_paginated(records):
+    if not records:
+        print("\nNo results found.\n")
+        return
+
+    page_size_input = input("Enter results per page: ").strip()
+
+    if not page_size_input.isdigit() or int(page_size_input) <= 0:
+        page_size = 10
+    else:
+        page_size = int(page_size_input)
+
+    paginator = Paginator(records, page_size)
+    total_pages = paginator.get_total_pages()
+    current_page = 1
+
+    while True:
+        page_records = paginator.get_page(current_page)
+
+        print(f"\nPage {current_page} of {total_pages}\n")
+        print_records(page_records)
+
+        if total_pages == 1:
+            break
+
+        print("\nNavigation:")
+        print("n - Next page")
+        print("p - Previous page")
+        print("q - Quit pagination")
+
+        action = input("Choose an option: ").strip().lower()
+
+        if action == "n":
+            if current_page < total_pages:
+                current_page += 1
+            else:
+                print("You are already on the last page.")
+
+        elif action == "p":
+            if current_page > 1:
+                current_page -= 1
+            else:
+                print("You are already on the first page.")
+
+        elif action == "q":
+            break
+
+        else:
+            print("Invalid option.")
 
 
 def get_optional_int(prompt):
@@ -28,6 +76,11 @@ def get_optional_int(prompt):
 def get_optional_date(prompt):
     value = input(prompt).strip()
     return value if value else None
+
+
+def get_sort_order():
+    order = input("Choose order (asc/desc): ").strip().lower()
+    return order == "desc"
 
 
 def main():
@@ -53,15 +106,18 @@ def main():
     print("Index saved to SQLite: data/file_index.db")
 
     while True:
-        print("\nSearch and Filter Options:")
+        print("\nSearch, Filter, Sort and Pagination Options:")
         print("1. Search by name")
         print("2. Search by extension")
         print("3. Search by name and extension")
         print("4. Filter by size")
         print("5. Filter by date")
         print("6. Filter by size and date")
-        print("7. Show all files")
-        print("8. Exit")
+        print("7. Sort by name")
+        print("8. Sort by size")
+        print("9. Sort by date")
+        print("10. Show all files")
+        print("11. Exit")
 
         choice = input("\nChoose an option: ").strip()
 
@@ -69,27 +125,27 @@ def main():
             keyword = input("Enter file name keyword: ").strip()
             search_engine = SearchEngine(files)
             results = search_engine.search_by_name(keyword)
-            print_records(results)
+            display_paginated(results)
 
         elif choice == "2":
             extension = input("Enter file extension (e.g. txt or .txt): ").strip()
             search_engine = SearchEngine(files)
             results = search_engine.search_by_extension(extension)
-            print_records(results)
+            display_paginated(results)
 
         elif choice == "3":
             keyword = input("Enter file name keyword: ").strip()
             extension = input("Enter file extension (e.g. txt or .txt): ").strip()
             search_engine = SearchEngine(files)
             results = search_engine.search(name_keyword=keyword, extension=extension)
-            print_records(results)
+            display_paginated(results)
 
         elif choice == "4":
             min_size = get_optional_int("Enter minimum size in bytes: ")
             max_size = get_optional_int("Enter maximum size in bytes: ")
             file_filter = FileFilter(files)
             results = file_filter.filter_by_size(min_size=min_size, max_size=max_size)
-            print_records(results)
+            display_paginated(results)
 
         elif choice == "5":
             start_date = get_optional_date("Enter start date (YYYY-MM-DD): ")
@@ -99,7 +155,7 @@ def main():
                 start_date=start_date,
                 end_date=end_date
             )
-            print_records(results)
+            display_paginated(results)
 
         elif choice == "6":
             min_size = get_optional_int("Enter minimum size in bytes: ")
@@ -114,12 +170,30 @@ def main():
                 start_date=start_date,
                 end_date=end_date
             )
-            print_records(results)
+            display_paginated(results)
 
         elif choice == "7":
-            print_records(files)
+            reverse = get_sort_order()
+            sorter = FileSorter(files)
+            results = sorter.sort_by_name(reverse=reverse)
+            display_paginated(results)
 
         elif choice == "8":
+            reverse = get_sort_order()
+            sorter = FileSorter(files)
+            results = sorter.sort_by_size(reverse=reverse)
+            display_paginated(results)
+
+        elif choice == "9":
+            reverse = get_sort_order()
+            sorter = FileSorter(files)
+            results = sorter.sort_by_date(reverse=reverse)
+            display_paginated(results)
+
+        elif choice == "10":
+            display_paginated(files)
+
+        elif choice == "11":
             print("Exiting program.")
             break
 
