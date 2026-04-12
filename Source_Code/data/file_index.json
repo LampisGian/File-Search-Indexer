@@ -1,0 +1,233 @@
+[
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/.DS_Store",
+        "name": ".DS_Store",
+        "extension": "",
+        "size": 12292,
+        "modified_date": "2026-04-12 19:16:15"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Video/test.mp4",
+        "name": "test.mp4",
+        "extension": ".mp4",
+        "size": 0,
+        "modified_date": "2026-03-02 18:11:22"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Images/test.gif",
+        "name": "test.gif",
+        "extension": ".gif",
+        "size": 1032183,
+        "modified_date": "2026-03-02 18:12:40"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Images/view.jpeg",
+        "name": "view.jpeg",
+        "extension": ".jpeg",
+        "size": 70488,
+        "modified_date": "2026-03-02 18:06:22"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Images/view copy.jpeg",
+        "name": "view copy.jpeg",
+        "extension": ".jpeg",
+        "size": 70488,
+        "modified_date": "2026-03-02 18:06:22"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Images/test copy.gif",
+        "name": "test copy.gif",
+        "extension": ".gif",
+        "size": 1032183,
+        "modified_date": "2026-03-02 18:12:40"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Spreadsheets/test.csv",
+        "name": "test.csv",
+        "extension": ".csv",
+        "size": 284042,
+        "modified_date": "2026-03-02 18:11:58"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Other/.DS_Store (1) (1)",
+        "name": ".DS_Store (1) (1)",
+        "extension": "",
+        "size": 6148,
+        "modified_date": "2026-03-02 18:59:02"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Other/.DS_Store (9)",
+        "name": ".DS_Store (9)",
+        "extension": "",
+        "size": 6148,
+        "modified_date": "2026-03-02 19:22:57"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Other/.DS_Store",
+        "name": ".DS_Store",
+        "extension": "",
+        "size": 6148,
+        "modified_date": "2026-04-12 19:15:45"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Other/.DS_Store (3)",
+        "name": ".DS_Store (3)",
+        "extension": "",
+        "size": 6148,
+        "modified_date": "2026-03-02 19:08:57"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Other/.DS_Store (4)",
+        "name": ".DS_Store (4)",
+        "extension": "",
+        "size": 6148,
+        "modified_date": "2026-03-02 19:22:01"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Other/.DS_Store (7)",
+        "name": ".DS_Store (7)",
+        "extension": "",
+        "size": 6148,
+        "modified_date": "2026-03-02 19:22:01"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Other/.DS_Store (11) 2",
+        "name": ".DS_Store (11) 2",
+        "extension": "",
+        "size": 14340,
+        "modified_date": "2026-03-04 11:07:21"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Other/.DS_Store (10)",
+        "name": ".DS_Store (10)",
+        "extension": "",
+        "size": 10244,
+        "modified_date": "2026-03-02 19:43:05"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Other/.DS_Store (6)",
+        "name": ".DS_Store (6)",
+        "extension": "",
+        "size": 6148,
+        "modified_date": "2026-03-02 19:21:30"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Other/.DS_Store (5)",
+        "name": ".DS_Store (5)",
+        "extension": "",
+        "size": 6148,
+        "modified_date": "2026-03-02 19:22:01"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Other/.DS_Store (1)",
+        "name": ".DS_Store (1)",
+        "extension": "",
+        "size": 6148,
+        "modified_date": "2026-03-02 19:12:51"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Other/.DS_Store (8)",
+        "name": ".DS_Store (8)",
+        "extension": "",
+        "size": 14340,
+        "modified_date": "2026-03-02 19:22:57"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Other/.DS_Store (2)",
+        "name": ".DS_Store (2)",
+        "extension": "",
+        "size": 10244,
+        "modified_date": "2026-03-02 19:08:57"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Audio/test.mp3",
+        "name": "test.mp3",
+        "extension": ".mp3",
+        "size": 0,
+        "modified_date": "2026-03-02 18:07:36"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Audio/test (1).mp3",
+        "name": "test (1).mp3",
+        "extension": ".mp3",
+        "size": 0,
+        "modified_date": "2026-03-02 18:07:36"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Audio/test (1) copy.mp3",
+        "name": "test (1) copy.mp3",
+        "extension": ".mp3",
+        "size": 0,
+        "modified_date": "2026-03-02 18:07:36"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Audio/test copy.mp3",
+        "name": "test copy.mp3",
+        "extension": ".mp3",
+        "size": 0,
+        "modified_date": "2026-03-02 18:07:36"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Presentations/test.ppt",
+        "name": "test.ppt",
+        "extension": ".ppt",
+        "size": 248320,
+        "modified_date": "2026-03-02 18:13:03"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Documents/test.docx",
+        "name": "test.docx",
+        "extension": ".docx",
+        "size": 12,
+        "modified_date": "2026-03-02 18:01:13"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Documents/test copy.pdf",
+        "name": "test copy.pdf",
+        "extension": ".pdf",
+        "size": 9820,
+        "modified_date": "2026-03-02 17:59:42"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Documents/test copy.rtf",
+        "name": "test copy.rtf",
+        "extension": ".rtf",
+        "size": 400,
+        "modified_date": "2026-03-02 17:59:27"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Documents/test copy.txt",
+        "name": "test copy.txt",
+        "extension": ".txt",
+        "size": 12,
+        "modified_date": "2026-03-02 18:01:05"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Documents/test.pdf",
+        "name": "test.pdf",
+        "extension": ".pdf",
+        "size": 9820,
+        "modified_date": "2026-03-02 17:59:42"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Documents/test copy.docx",
+        "name": "test copy.docx",
+        "extension": ".docx",
+        "size": 12,
+        "modified_date": "2026-03-02 18:01:13"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Documents/test.txt",
+        "name": "test.txt",
+        "extension": ".txt",
+        "size": 12,
+        "modified_date": "2026-03-02 18:01:05"
+    },
+    {
+        "path": "/Users/lampis/Documents/GitHub/File-Search-Indexer/Test/Documents/test.rtf",
+        "name": "test.rtf",
+        "extension": ".rtf",
+        "size": 400,
+        "modified_date": "2026-03-02 17:59:27"
+    }
+]
