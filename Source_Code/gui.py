@@ -1,5 +1,6 @@
 #This module defines the FileSearchApp class, which is a Tkinter-based GUI application for scanning folders, indexing file metadata, and providing search and filter functionalities.
-
+from pathlib import Path
+import sys
 import os
 import hashlib
 import tkinter as tk
@@ -15,7 +16,6 @@ from search.filters import FileFilter
 from search.sorter import FileSorter
 from search.paginator import Paginator
 
-
 class FileSearchApp(TkinterDnD.Tk):
     def __init__(self):
         super().__init__()
@@ -29,9 +29,11 @@ class FileSearchApp(TkinterDnD.Tk):
         self.current_results = []
         self.current_page = 1
 
+        json_file, sqlite_file = self.get_app_data_paths()
+
         self.storage = IndexStorage(
-            json_file="data/file_index.json",
-            sqlite_file="data/file_index.db"
+            json_file=json_file,
+            sqlite_file=sqlite_file
         )
 
         self.folder_var = tk.StringVar()
@@ -67,6 +69,15 @@ class FileSearchApp(TkinterDnD.Tk):
 
         self.setup_style()
         self.create_layout()
+
+    def get_app_data_paths(self):
+        app_support_dir = Path.home() / "Library" / "Application Support" / "FileSearchIndexer"
+        app_support_dir.mkdir(parents=True, exist_ok=True)
+
+        json_file = app_support_dir / "file_index.json"
+        sqlite_file = app_support_dir / "file_index.db"
+
+        return str(json_file), str(sqlite_file)    
 
     def setup_style(self):
         style = ttk.Style(self)
