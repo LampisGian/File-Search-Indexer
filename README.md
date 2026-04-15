@@ -37,7 +37,7 @@ python main.py
 # or
 python3 main.py
 ```
-> **Note:**The CLI version allows you to scan folders and use the available options for search, filtering, sorting, pagination, and viewing scan issues directly from the terminal.
+> **Note:** The CLI version allows you to scan folders and use the available options for search, filtering, sorting, pagination, and viewing scan issues directly from the terminal.
 
 ## User Interface Overview
 
