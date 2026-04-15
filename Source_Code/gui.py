@@ -1,5 +1,7 @@
 import os
+import hashlib
 import tkinter as tk
+from datetime import datetime, timedelta
 from tkinter import ttk, filedialog
 
 from tkinterdnd2 import DND_FILES, TkinterDnD
@@ -17,8 +19,8 @@ class FileSearchApp(TkinterDnD.Tk):
         super().__init__()
 
         self.title("File Search Indexer")
-        self.geometry("1480x900")
-        self.minsize(1240, 760)
+        self.geometry("1500x920")
+        self.minsize(1260, 780)
         self.configure(bg="#0b1220")
 
         self.records = []
@@ -40,6 +42,7 @@ class FileSearchApp(TkinterDnD.Tk):
         self.sort_var = tk.StringVar(value="name")
         self.order_var = tk.StringVar(value="asc")
         self.page_size_var = tk.StringVar(value="15")
+        self.recent_days_var = tk.StringVar(value="7")
 
         self.total_files_var = tk.StringVar(value="0")
         self.visible_results_var = tk.StringVar(value="0")
@@ -57,6 +60,8 @@ class FileSearchApp(TkinterDnD.Tk):
 
         self.search_popup = None
         self.filter_popup = None
+        self.recent_popup = None
+        self.duplicate_popup = None
 
         self.setup_style()
         self.create_layout()
@@ -114,8 +119,7 @@ class FileSearchApp(TkinterDnD.Tk):
         )
         style.map(
             "Modern.TButton",
-            background=[("active", "#334155"), ("pressed", "#475569")],
-            foreground=[("active", "#ffffff")]
+            background=[("active", "#334155"), ("pressed", "#475569")]
         )
 
         style.configure(
@@ -129,8 +133,7 @@ class FileSearchApp(TkinterDnD.Tk):
         )
         style.map(
             "Accent.TButton",
-            background=[("active", "#3b82f6"), ("pressed", "#1d4ed8")],
-            foreground=[("active", "#ffffff")]
+            background=[("active", "#3b82f6"), ("pressed", "#1d4ed8")]
         )
 
         style.configure(
@@ -144,8 +147,7 @@ class FileSearchApp(TkinterDnD.Tk):
         )
         style.map(
             "Panel.TButton",
-            background=[("active", "#243146"), ("pressed", "#334155")],
-            foreground=[("active", "#ffffff")]
+            background=[("active", "#243146"), ("pressed", "#334155")]
         )
 
         style.configure(
@@ -216,7 +218,7 @@ class FileSearchApp(TkinterDnD.Tk):
 
         ttk.Label(
             header,
-            text="Scan folders, browse indexed files, and work with a cleaner dark interface.",
+            text="Scan folders, browse indexed files, and use search, filters, recent files, and duplicate finder.",
             style="Subtitle.TLabel"
         ).pack(anchor="w", pady=(3, 0))
 
@@ -378,6 +380,20 @@ class FileSearchApp(TkinterDnD.Tk):
 
         ttk.Button(
             row,
+            text="Recently Added",
+            style="Panel.TButton",
+            command=self.open_recent_popup
+        ).pack(side="left", padx=(0, 8))
+
+        ttk.Button(
+            row,
+            text="Duplicate Finder",
+            style="Panel.TButton",
+            command=self.open_duplicate_popup
+        ).pack(side="left", padx=(0, 8))
+
+        ttk.Button(
+            row,
             text="Apply All",
             style="Accent.TButton",
             command=self.apply_filters_and_sort
@@ -495,7 +511,7 @@ class FileSearchApp(TkinterDnD.Tk):
         self.tree.bind("<<TreeviewSelect>>", self.show_selected_details)
         self.tree.bind("<Double-1>", self.open_selected_item)
 
-        right_card = self.make_card(container, fixed_width=380)
+        right_card = self.make_card(container, fixed_width=400)
         right_card.pack(side="right", fill="y", padx=(8, 0))
         right_card.pack_propagate(False)
 
@@ -515,7 +531,7 @@ class FileSearchApp(TkinterDnD.Tk):
         self.create_detail_block(details_holder, "Extension", self.selected_extension_var)
         self.create_detail_block(details_holder, "Size", self.selected_size_var)
         self.create_detail_block(details_holder, "Modified Date", self.selected_date_var)
-        self.create_detail_block(details_holder, "Path", self.selected_path_var, wrap=320)
+        self.create_detail_block(details_holder, "Path", self.selected_path_var, wrap=340)
 
         button_area = tk.Frame(right_inner, bg="#111827")
         button_area.pack(fill="x", pady=(10, 0))
@@ -690,6 +706,95 @@ class FileSearchApp(TkinterDnD.Tk):
             command=lambda: [self.apply_filters_and_sort(), self.filter_popup.destroy()]
         ).pack(side="right", padx=(0, 8))
 
+    def open_recent_popup(self):
+        if self.recent_popup and self.recent_popup.winfo_exists():
+            self.recent_popup.lift()
+            return
+
+        self.recent_popup = self.create_popup("Recently Added", 420, 210)
+
+        wrapper = tk.Frame(self.recent_popup, bg="#111827")
+        wrapper.pack(fill="both", expand=True, padx=16, pady=16)
+
+        tk.Label(
+            wrapper,
+            text="Recently Added Files",
+            bg="#111827",
+            fg="#f8fafc",
+            font=("Helvetica", 12, "bold")
+        ).pack(anchor="w", pady=(0, 12))
+
+        tk.Label(
+            wrapper,
+            text="Show files modified in the last N days",
+            bg="#111827",
+            fg="#94a3b8",
+            font=("Helvetica", 10)
+        ).pack(anchor="w", pady=(0, 10))
+
+        grid = tk.Frame(wrapper, bg="#111827")
+        grid.pack(fill="x")
+
+        tk.Label(grid, text="Days", bg="#111827", fg="#cbd5e1", font=("Helvetica", 10, "bold")).grid(row=0, column=0, sticky="w")
+        ttk.Entry(grid, textvariable=self.recent_days_var, style="Modern.TEntry", width=12).grid(row=1, column=0, pady=(4, 10), sticky="w")
+
+        btns = tk.Frame(wrapper, bg="#111827")
+        btns.pack(fill="x", pady=(8, 0))
+
+        ttk.Button(btns, text="Close", style="Modern.TButton", command=self.recent_popup.destroy).pack(side="right")
+        ttk.Button(
+            btns,
+            text="Show Results",
+            style="Accent.TButton",
+            command=lambda: [self.show_recent_files(), self.recent_popup.destroy()]
+        ).pack(side="right", padx=(0, 8))
+
+    def open_duplicate_popup(self):
+        if self.duplicate_popup and self.duplicate_popup.winfo_exists():
+            self.duplicate_popup.lift()
+            return
+
+        self.duplicate_popup = self.create_popup("Duplicate Finder", 500, 220)
+
+        wrapper = tk.Frame(self.duplicate_popup, bg="#111827")
+        wrapper.pack(fill="both", expand=True, padx=16, pady=16)
+
+        tk.Label(
+            wrapper,
+            text="Duplicate Finder",
+            bg="#111827",
+            fg="#f8fafc",
+            font=("Helvetica", 12, "bold")
+        ).pack(anchor="w", pady=(0, 12))
+
+        tk.Label(
+            wrapper,
+            text="This checks file contents and groups files with identical hashes.",
+            bg="#111827",
+            fg="#94a3b8",
+            font=("Helvetica", 10),
+            justify="left"
+        ).pack(anchor="w", pady=(0, 12))
+
+        tk.Label(
+            wrapper,
+            text="For large folders, this may take some time.",
+            bg="#111827",
+            fg="#94a3b8",
+            font=("Helvetica", 10)
+        ).pack(anchor="w")
+
+        btns = tk.Frame(wrapper, bg="#111827")
+        btns.pack(fill="x", pady=(18, 0))
+
+        ttk.Button(btns, text="Close", style="Modern.TButton", command=self.duplicate_popup.destroy).pack(side="right")
+        ttk.Button(
+            btns,
+            text="Find Duplicates",
+            style="Accent.TButton",
+            command=lambda: [self.find_duplicates(), self.duplicate_popup.destroy()]
+        ).pack(side="right", padx=(0, 8))
+
     def browse_folder(self):
         folder = filedialog.askdirectory()
         if folder:
@@ -730,6 +835,82 @@ class FileSearchApp(TkinterDnD.Tk):
             )
         except Exception as error:
             self.show_toast(f"Scan failed: {error}", "error")
+
+    def show_recent_files(self):
+        if not self.records:
+            self.show_toast("No records available. Scan or load data first.", "warning")
+            return
+
+        try:
+            days = int(self.recent_days_var.get().strip())
+            cutoff = datetime.now() - timedelta(days=days)
+
+            results = []
+            for record in self.records:
+                record_dt = datetime.strptime(record.modified_date, "%Y-%m-%d %H:%M:%S")
+                if record_dt >= cutoff:
+                    results.append(record)
+
+            sorter = FileSorter(results)
+            results = sorter.sort_by_date(reverse=True)
+
+            self.current_results = results
+            self.current_page = 1
+            self.refresh_current_page()
+            self.update_summary(results)
+            self.clear_selected_details()
+
+            self.show_toast(f"Showing {len(results)} recently added files.", "success")
+        except ValueError:
+            self.show_toast("Days must be a valid number.", "error")
+
+    def compute_file_hash(self, file_path, chunk_size=8192):
+        hasher = hashlib.md5()
+        with open(file_path, "rb") as file:
+            while True:
+                chunk = file.read(chunk_size)
+                if not chunk:
+                    break
+                hasher.update(chunk)
+        return hasher.hexdigest()
+
+    def find_duplicates(self):
+        if not self.records:
+            self.show_toast("No records available. Scan or load data first.", "warning")
+            return
+
+        try:
+            size_groups = {}
+            for record in self.records:
+                size_groups.setdefault(record.size, []).append(record)
+
+            candidate_groups = [group for group in size_groups.values() if len(group) > 1]
+
+            hash_groups = {}
+            for group in candidate_groups:
+                for record in group:
+                    if not os.path.exists(record.path):
+                        continue
+                    try:
+                        file_hash = self.compute_file_hash(record.path)
+                        hash_groups.setdefault(file_hash, []).append(record)
+                    except Exception:
+                        continue
+
+            duplicates = []
+            for group in hash_groups.values():
+                if len(group) > 1:
+                    duplicates.extend(group)
+
+            self.current_results = duplicates
+            self.current_page = 1
+            self.refresh_current_page()
+            self.update_summary(duplicates)
+            self.clear_selected_details()
+
+            self.show_toast(f"Found {len(duplicates)} duplicate files.", "success")
+        except Exception as error:
+            self.show_toast(f"Duplicate finder failed: {error}", "error")
 
     def apply_filters_and_sort(self):
         if not self.records:
@@ -798,6 +979,7 @@ class FileSearchApp(TkinterDnD.Tk):
         self.sort_var.set("name")
         self.order_var.set("asc")
         self.page_size_var.set("15")
+        self.recent_days_var.set("7")
 
         self.current_results = self.records[:]
         self.current_page = 1
