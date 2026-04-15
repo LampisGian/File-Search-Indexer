@@ -17,8 +17,8 @@ class FileSearchApp(TkinterDnD.Tk):
         super().__init__()
 
         self.title("File Search Indexer")
-        self.geometry("1500x930")
-        self.minsize(1250, 780)
+        self.geometry("1480x900")
+        self.minsize(1240, 760)
         self.configure(bg="#0b1220")
 
         self.records = []
@@ -55,8 +55,8 @@ class FileSearchApp(TkinterDnD.Tk):
         self.toast_frame = None
         self.toast_after_id = None
 
-        self.search_panel_visible = False
-        self.filter_panel_visible = False
+        self.search_popup = None
+        self.filter_popup = None
 
         self.setup_style()
         self.create_layout()
@@ -72,21 +72,21 @@ class FileSearchApp(TkinterDnD.Tk):
             "Title.TLabel",
             background="#0b1220",
             foreground="#f8fafc",
-            font=("Helvetica", 24, "bold")
+            font=("Helvetica", 22, "bold")
         )
 
         style.configure(
             "Subtitle.TLabel",
             background="#0b1220",
             foreground="#94a3b8",
-            font=("Helvetica", 11)
+            font=("Helvetica", 10)
         )
 
         style.configure(
             "Section.TLabel",
             background="#111827",
             foreground="#e5e7eb",
-            font=("Helvetica", 12, "bold")
+            font=("Helvetica", 11, "bold")
         )
 
         style.configure(
@@ -109,7 +109,7 @@ class FileSearchApp(TkinterDnD.Tk):
             foreground="#f8fafc",
             borderwidth=0,
             focusthickness=0,
-            padding=(12, 10),
+            padding=(10, 8),
             font=("Helvetica", 10, "bold")
         )
         style.map(
@@ -124,7 +124,7 @@ class FileSearchApp(TkinterDnD.Tk):
             foreground="#ffffff",
             borderwidth=0,
             focusthickness=0,
-            padding=(12, 10),
+            padding=(10, 8),
             font=("Helvetica", 10, "bold")
         )
         style.map(
@@ -139,7 +139,7 @@ class FileSearchApp(TkinterDnD.Tk):
             foreground="#e5e7eb",
             borderwidth=0,
             focusthickness=0,
-            padding=(14, 12),
+            padding=(12, 9),
             font=("Helvetica", 10, "bold")
         )
         style.map(
@@ -156,7 +156,7 @@ class FileSearchApp(TkinterDnD.Tk):
             lightcolor="#334155",
             darkcolor="#334155",
             insertcolor="#f8fafc",
-            padding=8
+            padding=7
         )
 
         style.configure(
@@ -168,7 +168,7 @@ class FileSearchApp(TkinterDnD.Tk):
             lightcolor="#334155",
             darkcolor="#334155",
             arrowcolor="#e5e7eb",
-            padding=7
+            padding=6
         )
 
         style.configure(
@@ -177,7 +177,7 @@ class FileSearchApp(TkinterDnD.Tk):
             fieldbackground="#0f172a",
             foreground="#e5e7eb",
             borderwidth=0,
-            rowheight=32,
+            rowheight=30,
             font=("Helvetica", 10)
         )
         style.map(
@@ -193,21 +193,20 @@ class FileSearchApp(TkinterDnD.Tk):
             font=("Helvetica", 10, "bold"),
             relief="flat"
         )
-        style.map("Treeview.Heading", background=[("active", "#243146")])
 
     def create_layout(self):
-        root = ttk.Frame(self, style="App.TFrame", padding=18)
+        root = ttk.Frame(self, style="App.TFrame", padding=14)
         root.pack(fill="both", expand=True)
 
         self.create_header(root)
         self.create_top_section(root)
         self.create_stats_row(root)
-        self.create_control_section(root)
+        self.create_tools_section(root)
         self.create_main_content(root)
 
     def create_header(self, parent):
         header = ttk.Frame(parent, style="App.TFrame")
-        header.pack(fill="x", pady=(0, 14))
+        header.pack(fill="x", pady=(0, 10))
 
         ttk.Label(
             header,
@@ -219,21 +218,21 @@ class FileSearchApp(TkinterDnD.Tk):
             header,
             text="Scan folders, browse indexed files, and work with a cleaner dark interface.",
             style="Subtitle.TLabel"
-        ).pack(anchor="w", pady=(4, 0))
+        ).pack(anchor="w", pady=(3, 0))
 
     def create_top_section(self, parent):
         card = self.make_card(parent)
-        card.pack(fill="x", pady=(0, 12))
+        card.pack(fill="x", pady=(0, 10))
 
         content = ttk.Frame(card, style="Card.TFrame")
         content.pack(fill="x")
 
         ttk.Label(content, text="Folder Input", style="Section.TLabel").grid(
-            row=0, column=0, columnspan=8, sticky="w", pady=(0, 10)
+            row=0, column=0, columnspan=8, sticky="w", pady=(0, 8)
         )
 
         ttk.Label(content, text="Folder Path", style="Field.TLabel").grid(
-            row=1, column=0, sticky="w", pady=(0, 6)
+            row=1, column=0, sticky="w", pady=(0, 5)
         )
 
         folder_entry = ttk.Entry(
@@ -241,7 +240,7 @@ class FileSearchApp(TkinterDnD.Tk):
             textvariable=self.folder_var,
             style="Modern.TEntry"
         )
-        folder_entry.grid(row=2, column=0, columnspan=4, sticky="ew", padx=(0, 10))
+        folder_entry.grid(row=2, column=0, columnspan=4, sticky="ew", padx=(0, 8))
 
         ttk.Button(
             content,
@@ -276,14 +275,14 @@ class FileSearchApp(TkinterDnD.Tk):
             text="Load JSON",
             style="Modern.TButton",
             command=self.load_json
-        ).grid(row=3, column=6, padx=4, pady=(8, 0), sticky="ew")
+        ).grid(row=3, column=6, padx=4, pady=(6, 0), sticky="ew")
 
         ttk.Button(
             content,
             text="Load SQLite",
             style="Modern.TButton",
             command=self.load_sqlite
-        ).grid(row=3, column=7, padx=4, pady=(8, 0), sticky="ew")
+        ).grid(row=3, column=7, padx=4, pady=(6, 0), sticky="ew")
 
         drop_box = tk.Frame(
             content,
@@ -292,15 +291,15 @@ class FileSearchApp(TkinterDnD.Tk):
             highlightbackground="#334155",
             bd=0
         )
-        drop_box.grid(row=3, column=0, columnspan=6, sticky="ew", pady=(12, 0))
+        drop_box.grid(row=3, column=0, columnspan=6, sticky="ew", pady=(10, 0))
 
         self.drop_label = tk.Label(
             drop_box,
             text="Drag and drop a folder here",
             bg="#0f172a",
             fg="#cbd5e1",
-            font=("Helvetica", 12, "bold"),
-            pady=18
+            font=("Helvetica", 11, "bold"),
+            pady=14
         )
         self.drop_label.pack(fill="x")
 
@@ -312,19 +311,19 @@ class FileSearchApp(TkinterDnD.Tk):
 
     def create_stats_row(self, parent):
         row = ttk.Frame(parent, style="App.TFrame")
-        row.pack(fill="x", pady=(0, 12))
+        row.pack(fill="x", pady=(0, 10))
 
         self.create_stat_card(row, "Total Files", self.total_files_var).pack(
-            side="left", fill="x", expand=True, padx=(0, 6)
+            side="left", fill="x", expand=True, padx=(0, 5)
         )
         self.create_stat_card(row, "Visible Results", self.visible_results_var).pack(
-            side="left", fill="x", expand=True, padx=6
+            side="left", fill="x", expand=True, padx=5
         )
         self.create_stat_card(row, "Total Size", self.total_size_var).pack(
-            side="left", fill="x", expand=True, padx=6
+            side="left", fill="x", expand=True, padx=5
         )
         self.create_stat_card(row, "Page", self.page_info_var).pack(
-            side="left", fill="x", expand=True, padx=(6, 0)
+            side="left", fill="x", expand=True, padx=(5, 0)
         )
 
     def create_stat_card(self, parent, title, variable):
@@ -336,7 +335,7 @@ class FileSearchApp(TkinterDnD.Tk):
             bd=0
         )
 
-        inner = ttk.Frame(card, style="Card.TFrame", padding=14)
+        inner = ttk.Frame(card, style="Card.TFrame", padding=12)
         inner.pack(fill="both", expand=True)
 
         ttk.Label(inner, text=title, style="Muted.TLabel").pack(anchor="w")
@@ -346,267 +345,109 @@ class FileSearchApp(TkinterDnD.Tk):
             textvariable=variable,
             bg="#111827",
             fg="#f8fafc",
-            font=("Helvetica", 18, "bold")
-        ).pack(anchor="w", pady=(8, 0))
+            font=("Helvetica", 16, "bold")
+        ).pack(anchor="w", pady=(6, 0))
 
         return card
 
-    def create_control_section(self, parent):
+    def create_tools_section(self, parent):
         card = self.make_card(parent)
-        card.pack(fill="x", pady=(0, 12))
+        card.pack(fill="x", pady=(0, 10))
 
         content = ttk.Frame(card, style="Card.TFrame")
         content.pack(fill="x")
 
-        ttk.Label(content, text="Tools", style="Section.TLabel").pack(anchor="w", pady=(0, 12))
+        ttk.Label(content, text="Tools", style="Section.TLabel").pack(anchor="w", pady=(0, 8))
 
-        toggle_row = ttk.Frame(content, style="Card.TFrame")
-        toggle_row.pack(fill="x", pady=(0, 10))
+        row = ttk.Frame(content, style="Card.TFrame")
+        row.pack(fill="x")
 
         ttk.Button(
-            toggle_row,
+            row,
             text="Search",
             style="Panel.TButton",
-            command=lambda: self.toggle_panel("search")
+            command=self.open_search_popup
         ).pack(side="left", padx=(0, 8))
 
         ttk.Button(
-            toggle_row,
+            row,
             text="Filter",
             style="Panel.TButton",
-            command=lambda: self.toggle_panel("filter")
+            command=self.open_filter_popup
         ).pack(side="left", padx=(0, 8))
 
         ttk.Button(
-            toggle_row,
+            row,
             text="Apply All",
             style="Accent.TButton",
             command=self.apply_filters_and_sort
         ).pack(side="right", padx=(8, 0))
 
         ttk.Button(
-            toggle_row,
+            row,
             text="Reset",
             style="Modern.TButton",
             command=self.reset_filters
         ).pack(side="right")
 
-        self.search_panel = self.create_search_panel(content)
-        self.filter_panel = self.create_filter_panel(content)
-
-        sort_page_box = tk.Frame(
+        sort_box = tk.Frame(
             content,
             bg="#0f172a",
             highlightthickness=1,
             highlightbackground="#243041",
             bd=0
         )
-        sort_page_box.pack(fill="x", pady=(8, 0))
+        sort_box.pack(fill="x", pady=(8, 0))
 
-        sort_page_inner = tk.Frame(sort_page_box, bg="#0f172a")
-        sort_page_inner.pack(fill="x", padx=14, pady=14)
+        inner = tk.Frame(sort_box, bg="#0f172a")
+        inner.pack(fill="x", padx=12, pady=12)
 
-        tk.Label(
-            sort_page_inner,
-            text="Sorting & Pagination",
-            bg="#0f172a",
-            fg="#f8fafc",
-            font=("Helvetica", 11, "bold")
-        ).grid(row=0, column=0, columnspan=5, sticky="w", pady=(0, 12))
-
-        tk.Label(
-            sort_page_inner,
-            text="Sort By",
-            bg="#0f172a",
-            fg="#cbd5e1",
-            font=("Helvetica", 10, "bold")
-        ).grid(row=1, column=0, sticky="w")
-
+        tk.Label(inner, text="Sort By", bg="#0f172a", fg="#cbd5e1", font=("Helvetica", 10, "bold")).grid(row=0, column=0, sticky="w")
         ttk.Combobox(
-            sort_page_inner,
+            inner,
             textvariable=self.sort_var,
             values=["name", "size", "date"],
             state="readonly",
             style="Modern.TCombobox",
             width=16
-        ).grid(row=2, column=0, padx=(0, 10), pady=(5, 0), sticky="ew")
+        ).grid(row=1, column=0, padx=(0, 8), pady=(4, 0), sticky="ew")
 
-        tk.Label(
-            sort_page_inner,
-            text="Order",
-            bg="#0f172a",
-            fg="#cbd5e1",
-            font=("Helvetica", 10, "bold")
-        ).grid(row=1, column=1, sticky="w")
-
+        tk.Label(inner, text="Order", bg="#0f172a", fg="#cbd5e1", font=("Helvetica", 10, "bold")).grid(row=0, column=1, sticky="w")
         ttk.Combobox(
-            sort_page_inner,
+            inner,
             textvariable=self.order_var,
             values=["asc", "desc"],
             state="readonly",
             style="Modern.TCombobox",
             width=12
-        ).grid(row=2, column=1, padx=(0, 10), pady=(5, 0), sticky="ew")
+        ).grid(row=1, column=1, padx=(0, 8), pady=(4, 0), sticky="ew")
 
-        tk.Label(
-            sort_page_inner,
-            text="Results / Page",
-            bg="#0f172a",
-            fg="#cbd5e1",
-            font=("Helvetica", 10, "bold")
-        ).grid(row=1, column=2, sticky="w")
-
+        tk.Label(inner, text="Results / Page", bg="#0f172a", fg="#cbd5e1", font=("Helvetica", 10, "bold")).grid(row=0, column=2, sticky="w")
         ttk.Combobox(
-            sort_page_inner,
+            inner,
             textvariable=self.page_size_var,
             values=["10", "15", "20", "25", "50", "100"],
             state="readonly",
             style="Modern.TCombobox",
             width=14
-        ).grid(row=2, column=2, padx=(0, 10), pady=(5, 0), sticky="ew")
+        ).grid(row=1, column=2, padx=(0, 8), pady=(4, 0), sticky="ew")
 
         ttk.Button(
-            sort_page_inner,
+            inner,
             text="Previous Page",
             style="Modern.TButton",
             command=self.previous_page
-        ).grid(row=2, column=3, padx=4, sticky="ew")
+        ).grid(row=1, column=3, padx=4, sticky="ew")
 
         ttk.Button(
-            sort_page_inner,
+            inner,
             text="Next Page",
             style="Modern.TButton",
             command=self.next_page
-        ).grid(row=2, column=4, padx=4, sticky="ew")
+        ).grid(row=1, column=4, padx=4, sticky="ew")
 
         for i in range(5):
-            sort_page_inner.columnconfigure(i, weight=1)
-
-    def create_search_panel(self, parent):
-        panel = tk.Frame(
-            parent,
-            bg="#0f172a",
-            highlightthickness=1,
-            highlightbackground="#243041",
-            bd=0
-        )
-
-        inner = tk.Frame(panel, bg="#0f172a")
-        inner.pack(fill="x", padx=14, pady=14)
-
-        tk.Label(
-            inner,
-            text="Search Options",
-            bg="#0f172a",
-            fg="#f8fafc",
-            font=("Helvetica", 11, "bold")
-        ).grid(row=0, column=0, columnspan=2, sticky="w", pady=(0, 12))
-
-        tk.Label(
-            inner,
-            text="File Name",
-            bg="#0f172a",
-            fg="#cbd5e1",
-            font=("Helvetica", 10, "bold")
-        ).grid(row=1, column=0, sticky="w")
-
-        ttk.Entry(
-            inner,
-            textvariable=self.search_name_var,
-            style="Modern.TEntry",
-            width=30
-        ).grid(row=2, column=0, padx=(0, 12), pady=(5, 0), sticky="ew")
-
-        tk.Label(
-            inner,
-            text="Extension",
-            bg="#0f172a",
-            fg="#cbd5e1",
-            font=("Helvetica", 10, "bold")
-        ).grid(row=1, column=1, sticky="w")
-
-        ttk.Entry(
-            inner,
-            textvariable=self.extension_var,
-            style="Modern.TEntry",
-            width=18
-        ).grid(row=2, column=1, pady=(5, 0), sticky="ew")
-
-        inner.columnconfigure(0, weight=1)
-        inner.columnconfigure(1, weight=1)
-
-        return panel
-
-    def create_filter_panel(self, parent):
-        panel = tk.Frame(
-            parent,
-            bg="#0f172a",
-            highlightthickness=1,
-            highlightbackground="#243041",
-            bd=0
-        )
-
-        inner = tk.Frame(panel, bg="#0f172a")
-        inner.pack(fill="x", padx=14, pady=14)
-
-        tk.Label(
-            inner,
-            text="Filter Options",
-            bg="#0f172a",
-            fg="#f8fafc",
-            font=("Helvetica", 11, "bold")
-        ).grid(row=0, column=0, columnspan=4, sticky="w", pady=(0, 12))
-
-        labels = [
-            ("Min Size (bytes)", self.min_size_var),
-            ("Max Size (bytes)", self.max_size_var),
-            ("Start Date (YYYY-MM-DD)", self.start_date_var),
-            ("End Date (YYYY-MM-DD)", self.end_date_var),
-        ]
-
-        for index, (label_text, variable) in enumerate(labels):
-            tk.Label(
-                inner,
-                text=label_text,
-                bg="#0f172a",
-                fg="#cbd5e1",
-                font=("Helvetica", 10, "bold")
-            ).grid(row=1, column=index, sticky="w")
-
-            ttk.Entry(
-                inner,
-                textvariable=variable,
-                style="Modern.TEntry",
-                width=18
-            ).grid(row=2, column=index, padx=(0, 10), pady=(5, 0), sticky="ew")
-
-        for i in range(4):
             inner.columnconfigure(i, weight=1)
-
-        return panel
-
-    def toggle_panel(self, panel_name):
-        if panel_name == "search":
-            if self.search_panel_visible:
-                self.search_panel.pack_forget()
-                self.search_panel_visible = False
-            else:
-                if self.filter_panel_visible:
-                    self.filter_panel.pack_forget()
-                    self.filter_panel_visible = False
-                self.search_panel.pack(fill="x", pady=(8, 0), before=self.search_panel.master.winfo_children()[-1])
-                self.search_panel_visible = True
-
-        elif panel_name == "filter":
-            if self.filter_panel_visible:
-                self.filter_panel.pack_forget()
-                self.filter_panel_visible = False
-            else:
-                if self.search_panel_visible:
-                    self.search_panel.pack_forget()
-                    self.search_panel_visible = False
-                self.filter_panel.pack(fill="x", pady=(8, 0), before=self.filter_panel.master.winfo_children()[-1])
-                self.filter_panel_visible = True
 
     def create_main_content(self, parent):
         container = ttk.Frame(parent, style="App.TFrame")
@@ -622,7 +463,7 @@ class FileSearchApp(TkinterDnD.Tk):
             left_inner,
             text="Indexed Files",
             style="Section.TLabel"
-        ).pack(anchor="w", pady=(0, 10))
+        ).pack(anchor="w", pady=(0, 8))
 
         columns = ("name", "extension", "size", "modified_date", "path")
         self.tree = ttk.Treeview(left_inner, columns=columns, show="headings")
@@ -634,10 +475,10 @@ class FileSearchApp(TkinterDnD.Tk):
         self.tree.heading("path", text="Path")
 
         self.tree.column("name", width=220)
-        self.tree.column("extension", width=100, anchor="center")
+        self.tree.column("extension", width=95, anchor="center")
         self.tree.column("size", width=120, anchor="e")
-        self.tree.column("modified_date", width=170, anchor="center")
-        self.tree.column("path", width=580)
+        self.tree.column("modified_date", width=165, anchor="center")
+        self.tree.column("path", width=560)
 
         y_scroll = ttk.Scrollbar(left_inner, orient="vertical", command=self.tree.yview)
         x_scroll = ttk.Scrollbar(left_inner, orient="horizontal", command=self.tree.xview)
@@ -654,7 +495,7 @@ class FileSearchApp(TkinterDnD.Tk):
         self.tree.bind("<<TreeviewSelect>>", self.show_selected_details)
         self.tree.bind("<Double-1>", self.open_selected_item)
 
-        right_card = self.make_card(container, fixed_width=360)
+        right_card = self.make_card(container, fixed_width=380)
         right_card.pack(side="right", fill="y", padx=(8, 0))
         right_card.pack_propagate(False)
 
@@ -665,7 +506,7 @@ class FileSearchApp(TkinterDnD.Tk):
             right_inner,
             text="Selected File Details",
             style="Section.TLabel"
-        ).pack(anchor="w", pady=(0, 14))
+        ).pack(anchor="w", pady=(0, 10))
 
         details_holder = tk.Frame(right_inner, bg="#111827")
         details_holder.pack(fill="both", expand=True)
@@ -674,10 +515,10 @@ class FileSearchApp(TkinterDnD.Tk):
         self.create_detail_block(details_holder, "Extension", self.selected_extension_var)
         self.create_detail_block(details_holder, "Size", self.selected_size_var)
         self.create_detail_block(details_holder, "Modified Date", self.selected_date_var)
-        self.create_detail_block(details_holder, "Path", self.selected_path_var, wrap=300)
+        self.create_detail_block(details_holder, "Path", self.selected_path_var, wrap=320)
 
         button_area = tk.Frame(right_inner, bg="#111827")
-        button_area.pack(fill="x", side="bottom", pady=(16, 0))
+        button_area.pack(fill="x", pady=(10, 0))
 
         ttk.Button(
             button_area,
@@ -701,10 +542,10 @@ class FileSearchApp(TkinterDnD.Tk):
             highlightbackground="#1f2937",
             bd=0
         )
-        block.pack(fill="x", pady=(0, 10))
+        block.pack(fill="x", pady=(0, 8))
 
         inner = tk.Frame(block, bg="#0f172a")
-        inner.pack(fill="x", padx=12, pady=10)
+        inner.pack(fill="x", padx=10, pady=9)
 
         tk.Label(
             inner,
@@ -723,7 +564,7 @@ class FileSearchApp(TkinterDnD.Tk):
             justify="left",
             anchor="w",
             wraplength=wrap
-        ).pack(anchor="w", fill="x", pady=(6, 0))
+        ).pack(anchor="w", fill="x", pady=(5, 0))
 
     def make_card(self, parent, fixed_width=None):
         outer = tk.Frame(
@@ -736,9 +577,118 @@ class FileSearchApp(TkinterDnD.Tk):
         if fixed_width is not None:
             outer.configure(width=fixed_width)
 
-        inner = ttk.Frame(outer, style="Card.TFrame", padding=14)
+        inner = ttk.Frame(outer, style="Card.TFrame", padding=12)
         inner.pack(fill="both", expand=True)
         return outer
+
+    def create_popup(self, title, width, height):
+        popup = tk.Toplevel(self)
+        popup.title(title)
+        popup.geometry(f"{width}x{height}")
+        popup.resizable(False, False)
+        popup.configure(bg="#111827")
+        popup.transient(self)
+        popup.grab_set()
+        return popup
+
+    def open_search_popup(self):
+        if self.search_popup and self.search_popup.winfo_exists():
+            self.search_popup.lift()
+            return
+
+        self.search_popup = self.create_popup("Search Options", 520, 220)
+
+        wrapper = tk.Frame(self.search_popup, bg="#111827")
+        wrapper.pack(fill="both", expand=True, padx=16, pady=16)
+
+        tk.Label(
+            wrapper,
+            text="Search Options",
+            bg="#111827",
+            fg="#f8fafc",
+            font=("Helvetica", 12, "bold")
+        ).pack(anchor="w", pady=(0, 12))
+
+        grid = tk.Frame(wrapper, bg="#111827")
+        grid.pack(fill="x")
+
+        tk.Label(grid, text="File Name", bg="#111827", fg="#cbd5e1", font=("Helvetica", 10, "bold")).grid(row=0, column=0, sticky="w")
+        ttk.Entry(grid, textvariable=self.search_name_var, style="Modern.TEntry", width=26).grid(row=1, column=0, padx=(0, 10), pady=(4, 10), sticky="ew")
+
+        tk.Label(grid, text="Extension", bg="#111827", fg="#cbd5e1", font=("Helvetica", 10, "bold")).grid(row=0, column=1, sticky="w")
+        ttk.Entry(grid, textvariable=self.extension_var, style="Modern.TEntry", width=20).grid(row=1, column=1, pady=(4, 10), sticky="ew")
+
+        grid.columnconfigure(0, weight=1)
+        grid.columnconfigure(1, weight=1)
+
+        btns = tk.Frame(wrapper, bg="#111827")
+        btns.pack(fill="x", pady=(8, 0))
+
+        ttk.Button(btns, text="Close", style="Modern.TButton", command=self.search_popup.destroy).pack(side="right")
+        ttk.Button(
+            btns,
+            text="Apply",
+            style="Accent.TButton",
+            command=lambda: [self.apply_filters_and_sort(), self.search_popup.destroy()]
+        ).pack(side="right", padx=(0, 8))
+
+    def open_filter_popup(self):
+        if self.filter_popup and self.filter_popup.winfo_exists():
+            self.filter_popup.lift()
+            return
+
+        self.filter_popup = self.create_popup("Filter Options", 760, 260)
+
+        wrapper = tk.Frame(self.filter_popup, bg="#111827")
+        wrapper.pack(fill="both", expand=True, padx=16, pady=16)
+
+        tk.Label(
+            wrapper,
+            text="Filter Options",
+            bg="#111827",
+            fg="#f8fafc",
+            font=("Helvetica", 12, "bold")
+        ).pack(anchor="w", pady=(0, 12))
+
+        grid = tk.Frame(wrapper, bg="#111827")
+        grid.pack(fill="x")
+
+        fields = [
+            ("Min Size (bytes)", self.min_size_var, 0),
+            ("Max Size (bytes)", self.max_size_var, 1),
+            ("Start Date (YYYY-MM-DD)", self.start_date_var, 2),
+            ("End Date (YYYY-MM-DD)", self.end_date_var, 3),
+        ]
+
+        for label_text, variable, column in fields:
+            tk.Label(
+                grid,
+                text=label_text,
+                bg="#111827",
+                fg="#cbd5e1",
+                font=("Helvetica", 10, "bold")
+            ).grid(row=0, column=column, sticky="w")
+
+            ttk.Entry(
+                grid,
+                textvariable=variable,
+                style="Modern.TEntry",
+                width=18
+            ).grid(row=1, column=column, padx=(0, 10), pady=(4, 10), sticky="ew")
+
+        for i in range(4):
+            grid.columnconfigure(i, weight=1)
+
+        btns = tk.Frame(wrapper, bg="#111827")
+        btns.pack(fill="x", pady=(8, 0))
+
+        ttk.Button(btns, text="Close", style="Modern.TButton", command=self.filter_popup.destroy).pack(side="right")
+        ttk.Button(
+            btns,
+            text="Apply",
+            style="Accent.TButton",
+            command=lambda: [self.apply_filters_and_sort(), self.filter_popup.destroy()]
+        ).pack(side="right", padx=(0, 8))
 
     def browse_folder(self):
         folder = filedialog.askdirectory()
@@ -1046,13 +996,13 @@ class FileSearchApp(TkinterDnD.Tk):
             highlightbackground=accent,
             bd=0
         )
-        self.toast_frame.place(relx=1.0, y=20, x=-20, anchor="ne")
+        self.toast_frame.place(relx=1.0, y=18, x=-18, anchor="ne")
 
         accent_bar = tk.Frame(self.toast_frame, bg=accent, width=6)
         accent_bar.pack(side="left", fill="y")
 
         body = tk.Frame(self.toast_frame, bg=bg)
-        body.pack(side="left", fill="both", expand=True, padx=12, pady=10)
+        body.pack(side="left", fill="both", expand=True, padx=12, pady=9)
 
         tk.Label(
             body,
@@ -1075,7 +1025,7 @@ class FileSearchApp(TkinterDnD.Tk):
         close_button.pack(side="right")
         close_button.bind("<Button-1>", lambda _e: self.dismiss_toast())
 
-        self.toast_after_id = self.after(3500, self.dismiss_toast)
+        self.toast_after_id = self.after(3200, self.dismiss_toast)
 
     def dismiss_toast(self):
         if self.toast_frame is not None:
