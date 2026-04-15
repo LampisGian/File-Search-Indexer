@@ -1,3 +1,6 @@
+#This module defines the FileSorter class, which provides methods for sorting a list of FileRecord objects based on different criteria such as name, size, and modified date.
+#The class includes methods to sort by name, sort by size, sort by date, and a general sort method that takes a sorting criterion as input and applies the appropriate sorting logic. 
+#The sorting methods return a new list of FileRecord objects sorted according to the specified criteria, allowing for flexible and efficient organization of file metadata in the search results.   
 from datetime import datetime
 
 from models.file_record import FileRecord

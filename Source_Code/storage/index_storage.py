@@ -1,3 +1,6 @@
+#This module defines the IndexStorage class, which provides methods for saving and loading file metadata records to and from both JSON and SQLite formats.
+#The class includes methods to save records to a JSON file, load records from a JSON file, initialize a SQLite database, save records to a SQLite database, and load records from a SQLite database. 
+#The implementation ensures that the necessary directories are created if they do not exist and that the data is stored in a structured format for efficient retrieval and management of file metadata.
 import json
 import os
 import sqlite3

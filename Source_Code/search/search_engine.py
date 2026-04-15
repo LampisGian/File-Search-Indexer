@@ -1,3 +1,7 @@
+#This module defines the SearchEngine class, which provides methods for searching through a list of FileRecord objects based on file name keywords and file extensions.
+#The class includes methods to search by name, search by extension, and a combined search method that applies both criteria sequentially. 
+#The search methods return a new list of FileRecord objects that match the specified search criteria, allowing for 
+#flexible and efficient searching of file metadata.
 from models.file_record import FileRecord
 
 

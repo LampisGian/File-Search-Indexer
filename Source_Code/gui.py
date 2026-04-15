@@ -1,3 +1,5 @@
+#This module defines the FileSearchApp class, which is a Tkinter-based GUI application for scanning folders, indexing file metadata, and providing search and filter functionalities.
+
 import os
 import hashlib
 import tkinter as tk
@@ -829,10 +831,19 @@ class FileSearchApp(TkinterDnD.Tk):
             self.update_summary(self.current_results)
             self.clear_selected_details()
 
-            self.show_toast(
-                f"Scan completed successfully. Indexed {len(self.records)} files.",
-                "success"
-            )
+            errors = scanner.get_errors()
+
+            if errors:
+                self.show_toast(
+                    f"Scan completed with {len(errors)} issue(s). Indexed {len(self.records)} files.",
+                    "warning"
+                )
+            else:
+                self.show_toast(
+                    f"Scan completed successfully. Indexed {len(self.records)} files.",
+                    "success"
+                )
+
         except Exception as error:
             self.show_toast(f"Scan failed: {error}", "error")
 
@@ -1020,8 +1031,8 @@ class FileSearchApp(TkinterDnD.Tk):
                 "end",
                 values=(
                     record.name,
-                    record.extension,
-                    record.size,
+                    record.display_extension(),
+                    record.formatted_size(),
                     record.modified_date,
                     record.path
                 )
@@ -1063,8 +1074,8 @@ class FileSearchApp(TkinterDnD.Tk):
         values = self.tree.item(selected[0], "values")
 
         self.selected_name_var.set(values[0])
-        self.selected_extension_var.set(values[1] if values[1] else "(no extension)")
-        self.selected_size_var.set(self.format_size(int(values[2])))
+        self.selected_extension_var.set(values[1])
+        self.selected_size_var.set(values[2])
         self.selected_date_var.set(values[3])
         self.selected_path_var.set(values[4])
 

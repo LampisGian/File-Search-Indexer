@@ -1,3 +1,7 @@
+#This module defines the FileFilter class, which provides methods for filtering a list of FileRecord objects based on file size and 
+# modification date.
+#The class includes methods to filter by size, filter by date, and a combined filter method that applies both size and date filters 
+# sequentially. The filtering methods return a new list of FileRecord objects that match the specified criteria.
 from datetime import datetime
 
 from models.file_record import FileRecord

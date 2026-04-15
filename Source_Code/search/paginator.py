@@ -1,3 +1,6 @@
+#This module defines the Paginator class, which is responsible for managing the pagination of file records in the search results.
+#The class takes a list of FileRecord objects and a page size as input and provides methods to calculate the total number of pages and retrieve a specific page of results based on the current page number. 
+#The pagination logic ensures that the correct subset of records is returned for each page, and it handles edge cases such as invalid page numbers and empty record lists gracefully.
 from models.file_record import FileRecord
 
 
